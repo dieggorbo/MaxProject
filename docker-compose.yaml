@@ -41,120 +41,126 @@ services:
       - projectMax
 
 #  ###################################
-# ### APP MongoDB Cluster
-# mongorsn1:
-#   container_name: mongors1
-#   image: mongo
-#   command: mongod --shardsvr --replSet mongors1 --dbpath /data/db --port 27017
-#   environment:
-#     - TZ=America/Sao_Paulo
-#   ports:
-#     - 27018:27017
-#   expose:
-#     - "27018"
-#   volumes:
-#     - /etc/localtime:/etc/localtime:ro
-#     - application.data.mongo:/data/db
+#  ### APP MongoDB Cluster
+#  mongorsn1:
+#    container_name: mongors1
+#    image: mongo
+#    command: mongod --shardsvr --replSet mongors1 --dbpath /data/db --port 27017
+#    environment:
+#      - TZ=America/Sao_Paulo
+#    ports:
+#      - 27018:27017
+#    expose:
+#      - "27018"
+#    volumes:
+#      - /etc/localtime:/etc/localtime:ro
+#      - application.data.mongo:/data/db
 #
-# mongocfg1:
-#   container_name: mongocfg1
-#   image: mongo
-#   command: mongod --configsvr --replSet mongors1conf --dbpath /data/db --port 27017
-#   environment:
-#     - TZ=America/Sao_Paulo
-#   ports:
-#     - 27019:27017
-#   expose:
-#     - "27019"
-#   volumes:
-#     - /etc/localtime:/etc/localtime:ro
-#     - application.config.mongo:/data/db
+#  mongocfg1:
+#    container_name: mongocfg1
+#    image: mongo
+#    command: mongod --configsvr --replSet mongors1conf --dbpath /data/db --port 27017
+#    environment:
+#      - TZ=America/Sao_Paulo
+#    ports:
+#      - 27019:27017
+#    expose:
+#      - "27019"
+#    volumes:
+#      - /etc/localtime:/etc/localtime:ro
+#      - application.config.mongo:/data/db
 #
-# mongos1:
-#   container_name: mongos1
-#   image: mongo
-#   depends_on:
-#     - mongocfg1
-#   command: mongos --configdb mongors1conf/mongocfg1:27019 --port 27017
-#   environment:
-#     - TZ=America/Sao_Paulo
-#   ports:
-#     - 27020:27017
-#   expose:
-#     - "27020"
-#   volumes:
-#     - /etc/localtime:/etc/localtime:ro
+#  mongos1:
+#    container_name: mongos1
+#    image: mongo
+#    depends_on:
+#      - mongocfg1
+#    command: mongos --configdb mongors1conf/mongocfg1:27019 --port 27017
+#    environment:
+#      - TZ=America/Sao_Paulo
+#    ports:
+#      - 27020:27017
+#    expose:
+#      - "27020"
+#    volumes:
+#      - /etc/localtime:/etc/localtime:ro
 
 
-#  ###################################
-#  ### Graylog Stack
-#  mongo:
-#    container_name: mongo
-#    image: mongo:3
-#    hostname: mongo
-#    environment:
-#      - TZ=America/Sao_Paulo
-#    volumes:
-#      - graylog.data.mongo:/data/db
-#    ports:
-#      - 27017:27017
-#    networks:
-#      - projectMax
-#
-#  graylog-es:
-#    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.3
-#    container_name: graylog-es
-#    hostname: graylog-elastic
-#    ulimits:
-#      memlock:
-#        soft: -1
-#        hard: -1
-#    volumes:
-#      - graylog.data.es:/usr/share/elasticsearch/data
-#    environment:
-#      - http.host=0.0.0.0
-#      - transport.host=graylog-es
-#      - network.host=0.0.0.0
-#      - TZ=America/Sao_Paulo
-#      - cluster.name=graylog
-#      - bootstrap.memory_lock=true
-#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-#      - xpack.security.enabled=false
-#    networks:
-#      - projectMax
-#    ulimits:
-#      memlock:
-#        soft: -1
-#        hard: -1
-#      nofile:
-#        soft: 20000
-#        hard: 65536
-#    volumes:
-#      - graylog.data.es:/usr/share/elasticsearch/data
-#    networks:
-#      - projectMax
-#    ports:
-#      - "9200:9200"
-#
-#  graylog:
-#    image: graylog2/server:2.4.0-1
-#    hostname: graylog
-#    environment:
-#      - TZ=America/Sao_Paulo
-#      - GRAYLOG_PASSWORD_SECRET=1q2w3e4r5t6y7u8i9o0p
-#      - GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
-#      - GRAYLOG_WEB_ENDPOINT_URI=http://0.0.0.0:9000/api
-#      - GRAYLOG_ELASTICSEARCH_HOSTS=http://graylog-es:9200
-#      - ELASTICSEARCH_HOSTS=graylog-es
-#    ports:
-#      - 9000:9000
-#      - 12201:12201
-#      - 514:514
-#    links:
-#      - mongo
-#      - graylog-es
-#    networks:
-#      - projectMax
+  ###################################
+  ### Graylog Stack
+  mongo:
+    container_name: mongo
+    image: mongo:3
+    hostname: mongo
+    environment:
+      - TZ=America/Sao_Paulo
+    volumes:
+      - graylog.data.mongo:/data/db
+    ports:
+      - 27017:27017
+    networks:
+      - projectMax
+
+  graylog-es:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.3
+    container_name: graylog-es
+    hostname: graylog-elastic
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - graylog.data.es:/usr/share/elasticsearch/data
+    environment:
+      - http.host=0.0.0.0
+      - transport.host=graylog-es
+      - network.host=0.0.0.0
+      - TZ=America/Sao_Paulo
+      - cluster.name=graylog
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+    networks:
+      - projectMax
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 20000
+        hard: 65536
+    volumes:
+      - graylog.data.es:/usr/share/elasticsearch/data
+    networks:
+      - projectMax
+    ports:
+      - "9200:9200"
+
+  graylog:
+    image: graylog2/server:2.4.0-1
+    hostname: graylog
+    environment:
+      - TZ=America/Sao_Paulo
+      - GRAYLOG_PASSWORD_SECRET=1q2w3e4r5t6y7u8i9o0p
+      - GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
+      - GRAYLOG_WEB_ENDPOINT_URI=http://0.0.0.0:9000/api
+      - GRAYLOG_ELASTICSEARCH_HOSTS=http://graylog-es:9200
+      - ELASTICSEARCH_HOSTS=graylog-es
+    ports:
+      - 9000:9000
+      - 5000:5000/udp
+      - 12201:12201/udp
+      - 514:514/udp
+    expose:
+      - 9000
+      - 5000
+      - 12201
+      - 514
+    links:
+      - mongo
+      - graylog-es
+    networks:
+      - projectMax
 
 
   ###################################
@@ -163,8 +169,16 @@ services:
     build:
       context: ./application
       dockerfile: Dockerfile
+    depends_on:
+      - graylog
     links:
       - app-mongo
+      - graylog
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://localhost:12201"
+        tag: "max-app-logger"
     ports:
       - 443:443
     expose: 

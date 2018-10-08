@@ -1,7 +1,7 @@
 # MaxProject Description
 [STACK] - Graylog/MongoDB CLuster/Python app(Flask)
 
-This project deploy an application Stack containing a simple form using python Flask framework that save this info into a MongoDB collection. In a plus, a Graylog stack is also deployed to handle logs
+This project deploy an application Stack containing a simple form using python Flask framework that save this info into a MongoDB collection. As a plus, a Graylog stack is also deployed to handle logs
 
 
 # REQUIREMENTS
@@ -24,3 +24,7 @@ Necessary to change the sysctl parameter vm.max_map_count before clone this repo
    URL: https://<IP>
 
  
+# TODO
+ - Implement NGINX cache layer to handle SSL/HTTP2 connections,redirect HTTP to HTTPS and also speed up content delivery with some cache rules
+ - Implement mongodb HA cluster since AWS t2.micro instance could not deal with the app load  =[
+ - Beautify frontend
