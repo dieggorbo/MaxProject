@@ -1,5 +1,5 @@
-import db
-from flask import (Flask, Blueprint, flash, render_template, request, url_for)
+from db import db_client
+from flask import (Flask, flash, render_template, request, url_for)
 
 
 app = Flask(__name__)
@@ -15,7 +15,7 @@ def contact():
       "sugestion": request.form['sugestion']
     }
 
-    db.insert(payload)
+    db_client.contacts.insert_one(payload)
     flash('Obrigado ' + request.form['name'] + ', sua sugestao foi enviada')
  
   return render_template('contato.html')

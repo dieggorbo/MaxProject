@@ -1,5 +1,5 @@
 
 # Database constants
-db_host = "app-mongo-cluster"
-db_port = 27017
+db_host = "app-mongo"
+db_port = 28017
 db_database = "max"
