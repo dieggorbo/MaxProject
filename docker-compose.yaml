@@ -16,14 +16,26 @@ volumes:
     driver: "local"
   application.data.mongo:
     driver: "local"
-  application.config.mongo:
-    driver: "local"
+#  application.data.mongo1:
+#    driver: "local"
+#  application.data.mongo2:
+#    driver: "local"
+#  application.data.mongo3:
+#    driver: "local"
+#  application.config.mongo1:
+#    driver: "local"
+#  application.config.mongo2:
+#    driver: "local"
+#  application.config.mongo3:
+#    driver: "local"
 
 ###################################
 # SERVICES
 ###################################
 services:
 
+  ###################################
+  ### APP MongoDB Cluster
   app-mongo:
     container_name: app-mongo
     image: mongo
@@ -40,51 +52,125 @@ services:
     networks:
       - projectMax
 
-#  ###################################
-#  ### APP MongoDB Cluster
+#  # replicasets
 #  mongorsn1:
-#    container_name: mongors1
+#    container_name: mongors1n1
 #    image: mongo
-#    command: mongod --shardsvr --replSet mongors1 --dbpath /data/db --port 27017
-#    environment:
-#      - TZ=America/Sao_Paulo
+#    command: mongod --shardsvr --replSet mongors1 --dbpath /data/db --port 20017
 #    ports:
-#      - 27018:27017
+#      - 20017:20017
 #    expose:
-#      - "27018"
+#      - "20017"
+#    environment:
+#      TERM: xterm
 #    volumes:
 #      - /etc/localtime:/etc/localtime:ro
-#      - application.data.mongo:/data/db
+#      - application.data.mongo1:/data/db
+#    networks:
+#      - projectMax
+#  mongors1n2:
+#    container_name: mongors1n2
+#    image: mongo
+#    command: mongod --shardsvr --replSet mongors1 --dbpath /data/db --port 20018
+#    ports:
+#      - 20018:20018
+#    expose:
+#      - "20018"
+#    environment:
+#      TERM: xterm
+#    volumes:
+#      - /etc/localtime:/etc/localtime:ro
+#      - application.data.mongo2:/data/db
+#    networks:
+#      - projectMax
+#  mongors1n3:
+#    container_name: mongors1n3
+#    image: mongo
+#    command: mongod --shardsvr --replSet mongors1 --dbpath /data/db --port 20019
+#    ports:
+#      - 20019:20019
+#    expose:
+#      - "20019"
+#    environment:
+#      TERM: xterm
+#    volumes:
+#      - /etc/localtime:/etc/localtime:ro
+#      - application.data.mongo3:/data/db
+#    networks:
+#      - projectMax
 #
+#  #mongo config 
 #  mongocfg1:
 #    container_name: mongocfg1
 #    image: mongo
-#    command: mongod --configsvr --replSet mongors1conf --dbpath /data/db --port 27017
+#    command: mongod --configsvr --replSet mongors1conf --dbpath /data/db --port 21017
 #    environment:
-#      - TZ=America/Sao_Paulo
-#    ports:
-#      - 27019:27017
+#      TERM: xterm
 #    expose:
-#      - "27019"
+#      - "21017"
 #    volumes:
 #      - /etc/localtime:/etc/localtime:ro
-#      - application.config.mongo:/data/db
+#      - application.config.mongo1:/data/db
+#    networks:
+#      - projectMax
+#  mongocfg2:
+#    container_name: mongocfg2
+#    image: mongo
+#    command: mongod --configsvr --replSet mongors1conf --dbpath /data/db --port 21018
+#    environment:
+#      TERM: xterm
+#    expose:
+#      - "21018"
+#    volumes:
+#      - /etc/localtime:/etc/localtime:ro
+#      - application.config.mongo2:/data/db
+#    networks:
+#      - projectMax
+#  mongocfg3:
+#    container_name: mongocfg3
+#    image: mongo
+#    command: mongod --configsvr --replSet mongors1conf --dbpath /data/db --port 21019
+#    environment:
+#      TERM: xterm
+#    expose:
+#      - "21019"
+#    volumes:
+#      - /etc/localtime:/etc/localtime:ro
+#      - application.config.mongo3:/data/db
+#    networks:
+#      - projectMax
 #
+#  # mongos router
 #  mongos1:
 #    container_name: mongos1
 #    image: mongo
 #    depends_on:
 #      - mongocfg1
-#    command: mongos --configdb mongors1conf/mongocfg1:27019 --port 27017
-#    environment:
-#      - TZ=America/Sao_Paulo
+#      - mongocfg2
+#    command: mongos --configdb mongors1conf/mongocfg1:21017,mongocfg2:21018,mongocfg3:21019 --port 22017
 #    ports:
-#      - 27020:27017
+#      - 22017:22017
 #    expose:
-#      - "27020"
+#      - "22017"
 #    volumes:
 #      - /etc/localtime:/etc/localtime:ro
-
+#    networks:
+#      - projectMax
+#  mongos2:
+#    container_name: mongos2
+#    image: mongo
+#    depends_on:
+#      - mongocfg1
+#      - mongocfg2
+#    command: mongos --configdb mongors1conf/mongocfg1:21017,mongocfg2:21018,mongocfg3:21019 --port 22018
+#    ports:
+#      - 22018:22018
+#    expose:
+#      - "22018"
+#    volumes:
+#      - /etc/localtime:/etc/localtime:ro
+#    networks:
+#      - projectMax
 
   ###################################
   ### Graylog Stack
