@@ -1,0 +1,179 @@
+version: '3'
+
+###################################
+# NETWORKS
+###################################
+networks:
+  projectMax:
+
+###################################
+# VOLUMES
+###################################
+volumes:
+  graylog.data.es:
+    driver: "local"
+  graylog.data.mongo:
+    driver: "local"
+  application.data.mongo:
+    driver: "local"
+
+###################################
+# SERVICES
+###################################
+services:
+
+  ####################################
+  ## mongo db cluster used by application
+  #app-mongo-n1:
+  #  container_name: app-mongo-n1
+  #  hostname: app-mongo-cluster
+  #  image: mongo
+  #  command: mongod --smalfiles --replSet mongors1 --dbpath /data/db
+  #  ports:
+  #    - 27017:27017
+  #  environment:
+  #    - TZ=America/Sao_Paulo
+  #  volumes:
+  #    - /etc/localtime:/etc/localtime:ro
+  #    - /mongo_cluster/data1:/data/db
+  #  networks:
+  #    - projectMax
+#
+#  app-mongo-n2:
+#    container_name: app-mongo-n2
+#    hostname: app-mongo-cluster
+#    image: mongo
+#    command: mongod --smallfiles --replSet mongors1 --dbpath /data/db
+#    ports:
+#      - 27018:27017
+#    environment:
+#      - TZ=America/Sao_Paulo
+#    volumes:
+#      - /etc/localtime:/etc/localtime:ro
+#      - /mongo_cluster/data2:/data/db
+#    networks:
+#      - projectMax
+#
+#  app-mongo-n3:
+#    container_name: app-mongo-n3
+#    hostname: app-mongo-cluster
+#    image: mongo
+#    command: mongod --smallfiles --replSet mongors1 --dbpath /data/db
+#    ports:
+#      - 27019:27017
+#    environment:
+#      - TZ=America/Sao_Paulo
+#    volumes:
+#      - /etc/localtime:/etc/localtime:ro
+#      - /mongo_cluster/data3:/data/db
+#    networks:
+#      - projectMax
+
+
+#  mongorsn1:
+##    container_name: mongors1n1
+#    image: mongo
+#    #command: mongod --shardsvr --replSet mongors1 --dbpath /data/db --port 27017
+#    command: mongod --dbpath /data/db --port 27017
+##    ports:
+##      - 27017:27017
+##    expose:
+##      - "27017"
+#    environment:
+#      TERM: xterm
+#    volumes:
+#      - /etc/localtime:/etc/localtime:ro
+#      - ./mongo_cluster/data1:/data/db
+#    networks:
+#      - projectMax
+
+
+
+
+
+  ###################################
+  ### Graylog Stack
+  graylog-mongo:
+    container_name: graylog-mongo
+    image: mongo:3
+    hostname: graylog-mongo
+    environment:
+      - TZ=America/Sao_Paulo
+    volumes:
+      - graylog.data.mongo:/data/db
+    networks:
+      - projectMax
+
+  graylog-es:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.3
+    container_name: graylog-es
+    hostname: graylog-elastic
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - graylog.data.es:/usr/share/elasticsearch/data
+    environment:
+      - http.host=0.0.0.0
+      - transport.host=graylog-es
+      - network.host=0.0.0.0
+      - TZ=America/Sao_Paulo
+      - cluster.name=graylog
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms128m -Xmx128m"
+      - xpack.security.enabled=false
+    networks:
+      - projectMax
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 20000
+        hard: 65536
+    volumes:
+      - graylog.data.es:/usr/share/elasticsearch/data
+    networks:
+      - projectMax
+    ports:
+      - "9200:9200"
+
+  graylog:
+    image: graylog2/server:2.4.0-1
+    hostname: graylog
+    environment:
+      - TZ=America/Sao_Paulo
+      - GRAYLOG_PASSWORD_SECRET=1q2w3e4r5t6y7u8i9o0p
+      - GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
+      - GRAYLOG_WEB_ENDPOINT_URI=http://0.0.0.0:9000/api
+      - GRAYLOG_ELASTICSEARCH_HOSTS=http://graylog-es:9200
+      - ELASTICSEARCH_HOSTS=graylog-es
+    ports:
+      - 9000:9000
+      - 12201:12201
+      - 514:514
+    links:
+      - graylog-mongo
+      - graylog-es
+    networks:
+      - projectMax
+
+
+#  ###################################
+#  ### Application Server
+#  gunicorn-srv:
+#    build:
+#      context: ./application
+#      dockerfile: Dockerfile
+#    ports:
+#      - 443:443
+#    expose: 
+#      - 443
+#    networks:
+#      - projectMax
+#
+#
+#  ###################################
+#  ### Cache/Router server
+

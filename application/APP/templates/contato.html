@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+  <br/>
+  <div class="panel panel-default">
+    	
+    <div class="panel-heading"><h2>Contato</h2></div>
+    <div class="panel-body">
+
+      <form action="" class="form-horizontal" method="post" role="form">
+        <div class="form-group">
+	  <label class="col-md-8 control-label" for="Name">Nome:</label>  
+	  <div class="col-md-8">
+	    <input name="name" placeholder="coloque seu nome aqui" class="form-control input-md" required="" type="text">
+          </div>
+        </div>
+	    
+	<div class="form-group">
+	  <label class="col-md-8 control-label" for="email">Email:</label>  
+	  <div class="col-md-8">
+	    <input type="email" name="email" placeholder="não é para spam ;)" class="form-control input-md" required=>
+          </div>
+        </div>
+	    
+	<div class="form-group">
+	  <label class="col-md-8 control-label" for="sugestao">Sugestao:</label>
+	  <div class="col-md-8">                     
+	    <textarea class="form-control" name="sugestion" required="">Deixe uma sugestão bacana...</textarea>
+	  </div>
+	</div>
+
+	<div class="form-group">
+	  <label class="col-md-8 control-label" for="submit"></label>
+	  <div class="col-md-8">
+	    <button type="submit" name="submit" class="btn btn-success">Vai!</button>
+	    <button type="reset" id="clear" name="clear" class="btn btn-danger">Limpar</button>
+	  </div>
+        </div>
+
+      </form>
+      <br>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
